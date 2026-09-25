@@ -1,0 +1,149 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sora);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-ember: var(--ember);
+  --color-ember-soft: var(--ember-soft);
+  --color-bone: var(--bone);
+  --color-surface: var(--surface);
+  --color-danger: var(--danger);
+  --color-ok: var(--ok);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  color-scheme: dark;
+  --ember: #ff4d1c;
+  --ember-soft: #ff8a3d;
+  --bone: #f5f1ea;
+  --surface: #161616;
+  --danger: #f04438;
+  --ok: #3ccb7f;
+
+  --background: #0b0b0d;
+  --foreground: var(--bone);
+  --card: var(--surface);
+  --card-foreground: var(--bone);
+  --popover: #121214;
+  --popover-foreground: var(--bone);
+  --primary: var(--ember);
+  --primary-foreground: #0b0b0d;
+  --secondary: #1d1d20;
+  --secondary-foreground: var(--bone);
+  --muted: #1b1b1e;
+  --muted-foreground: #a09a90;
+  --accent: #1f1f22;
+  --accent-foreground: var(--bone);
+  --destructive: var(--danger);
+  --border: rgb(245 241 234 / 0.08);
+  --input: rgb(245 241 234 / 0.12);
+  --ring: var(--ember-soft);
+  --radius: 0.625rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply scroll-smooth font-sans;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  ::selection {
+    background: rgb(255 77 28 / 0.35);
+    color: var(--bone);
+  }
+}
+
+@utility bg-ember-gradient {
+  background-image: linear-gradient(135deg, var(--ember) 0%, var(--ember-soft) 100%);
+}
+
+@utility text-ember-gradient {
+  background-image: linear-gradient(135deg, var(--ember) 0%, var(--ember-soft) 100%);
+  background-clip: text;
+  color: transparent;
+}
+
+@utility surface-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow:
+    inset 0 1px 0 rgb(245 241 234 / 0.05),
+    inset 0 0 32px rgb(255 138 61 / 0.035),
+    0 20px 40px -24px rgb(0 0 0 / 0.8);
+}
+
+@utility glass-card {
+  background-color: rgb(22 22 22 / 0.55);
+  border: 1px solid rgb(245 241 234 / 0.08);
+  box-shadow: inset 0 1px 0 rgb(245 241 234 / 0.06);
+  backdrop-filter: blur(14px);
+}
+
+@utility grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@keyframes cube-spin {
+  from {
+    transform: rotateX(0deg) rotateY(0deg);
+  }
+  to {
+    transform: rotateX(360deg) rotateY(360deg);
+  }
+}
+
+@keyframes flow-dash {
+  to {
+    stroke-dashoffset: -64;
+  }
+}
+
+.cube-spin {
+  animation: cube-spin var(--spin-duration, 14s) linear infinite;
+}
+
+.flow-dash {
+  animation: flow-dash 2.4s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cube-spin,
+  .flow-dash {
+    animation: none;
+  }
+}
