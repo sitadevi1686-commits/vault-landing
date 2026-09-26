@@ -56,7 +56,7 @@ export function Nav() {
                 render={<a href="#download" />}
                 className={cn(pillPrimary, pillSizes.lg, "mt-auto")}
               >
-                Download Vault
+                Download Hydras
               </SheetClose>
             </SheetContent>
           </Sheet>

@@ -27,7 +27,7 @@ export function VaultLogo({ id }: { id: string }) {
   return (
     <span className="flex items-center gap-2.5">
       <VaultMark id={id} />
-      <span className="font-heading text-lg font-semibold tracking-tight">Vault</span>
+      <span className="font-heading text-lg font-semibold tracking-tight">Hydras</span>
     </span>
   );
 }

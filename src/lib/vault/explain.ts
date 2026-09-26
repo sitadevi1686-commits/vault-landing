@@ -25,9 +25,9 @@ export type ProofInput = {
 export function proofChecks(input: ProofInput): ProofCheck[] {
   if (!input.known) {
     return [
-      idle("reachable", "Vault is running", "Still asking the control panel."),
-      idle("copies", "A dead disk does not erase the file", "Waiting until Vault answers."),
-      idle("repair", "Repair time is measured", "Waiting until Vault answers."),
+      idle("reachable", "Hydras is running", "Still asking the control panel."),
+      idle("copies", "A dead disk does not erase the file", "Waiting until Hydras answers."),
+      idle("repair", "Repair time is measured", "Waiting until Hydras answers."),
     ];
   }
   return [vaultAnswers(input), copiesSurvive(input), repairIsTimed(input)];
@@ -41,14 +41,14 @@ function vaultAnswers(input: ProofInput): ProofCheck {
   if (!input.reachable) {
     return {
       id: "reachable",
-      title: "Vault is running",
+      title: "Hydras is running",
       state: "fail",
       evidence: "This page cannot reach the control panel, so nothing below is live.",
     };
   }
   return {
     id: "reachable",
-    title: "Vault is running",
+    title: "Hydras is running",
     state: "pass",
     evidence: `The control panel answered. ${input.nodesUp} of ${input.nodesTotal} storage machines are serving files.`,
   };
@@ -60,7 +60,7 @@ function copiesSurvive(input: ProofInput): ProofCheck {
       id: "copies",
       title: "A dead disk does not erase the file",
       state: "idle",
-      evidence: "Waiting for Vault before this can be judged.",
+      evidence: "Waiting for Hydras before this can be judged.",
     };
   }
   if (input.unavailable > 0) {
@@ -77,7 +77,7 @@ function copiesSurvive(input: ProofInput): ProofCheck {
       title: "A dead disk does not erase the file",
       state: "working",
       evidence:
-        "A machine is missing and Vault is copying data onto the ones that are still up. A download should still succeed.",
+        "A machine is missing and Hydras is copying data onto the ones that are still up. A download should still succeed.",
     };
   }
   if (input.objects === 0) {
@@ -103,7 +103,7 @@ function repairIsTimed(input: ProofInput): ProofCheck {
       id: "repair",
       title: "Repair time is measured",
       state: "idle",
-      evidence: "Waiting for Vault before a recovery time can be shown.",
+      evidence: "Waiting for Hydras before a recovery time can be shown.",
     };
   }
   if (input.openIncidents > 0) {
@@ -155,7 +155,7 @@ export function nodeSituation(state: string, link: string): { label: string; mea
   if (link === "partitioned") {
     return {
       label: "Network cut",
-      meaning: "The program is still running, but Vault cannot reach it. This is a broken switch, not a dead disk.",
+      meaning: "The program is still running, but Hydras cannot reach it. This is a broken switch, not a dead disk.",
     };
   }
   if (link === "flaky") {
@@ -179,7 +179,7 @@ export function nodeSituation(state: string, link: string): { label: string; mea
   if (state === "suspect") {
     return {
       label: "Not answering",
-      meaning: "Heartbeats are missing. Vault is about to treat this machine as dead.",
+      meaning: "Heartbeats are missing. Hydras is about to treat this machine as dead.",
     };
   }
   if (state === "starting") {

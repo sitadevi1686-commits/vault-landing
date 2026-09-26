@@ -14,7 +14,7 @@ const healthy = {
 };
 
 describe("clusterVerdict", () => {
-  it("tells the operator to start Vault when it is offline", () => {
+  it("tells the operator to start Hydras when it is offline", () => {
     const verdict = clusterVerdict({
       ...healthy,
       reachable: false,
@@ -24,7 +24,7 @@ describe("clusterVerdict", () => {
       objects: 0,
     });
     expect(verdict.tone).toBe("offline");
-    expect(verdict.detail).toMatch(/Start Vault/);
+    expect(verdict.detail).toMatch(/Start Hydras/);
   });
 
   it("treats a missing chunk as a risk, not a quiet repair", () => {

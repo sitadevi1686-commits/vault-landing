@@ -14,7 +14,7 @@ export type DesktopBuild = {
 };
 
 export const siteConfig = {
-  name: "Vault",
+  name: "Hydras",
   githubUrl: GITHUB_URL,
   docsUrl: `${GITHUB_URL}#readme`,
   releasesUrl: RELEASES_URL,
@@ -25,26 +25,26 @@ export const siteConfig = {
     {
       os: "windows",
       label: "Windows",
-      fileName: "Vault-Setup-0.1.0.exe",
+      fileName: "Hydras-Setup-0.1.0.exe",
       arch: "x64 · Windows 10+",
       size: "~92 MB",
-      href: `${RELEASES_URL}/download/Vault-Setup-0.1.0.exe`,
+      href: `${RELEASES_URL}/download/Hydras-Setup-0.1.0.exe`,
     },
     {
       os: "mac",
       label: "macOS",
-      fileName: "Vault-0.1.0-universal.dmg",
+      fileName: "Hydras-0.1.0-universal.dmg",
       arch: "Apple silicon + Intel",
       size: "~110 MB",
-      href: `${RELEASES_URL}/download/Vault-0.1.0-universal.dmg`,
+      href: `${RELEASES_URL}/download/Hydras-0.1.0-universal.dmg`,
     },
     {
       os: "linux",
       label: "Linux",
-      fileName: "Vault-0.1.0.AppImage",
+      fileName: "Hydras-0.1.0.AppImage",
       arch: "x64 · AppImage",
       size: "~98 MB",
-      href: `${RELEASES_URL}/download/Vault-0.1.0.AppImage`,
+      href: `${RELEASES_URL}/download/Hydras-0.1.0.AppImage`,
     },
   ] satisfies DesktopBuild[],
   nav: [

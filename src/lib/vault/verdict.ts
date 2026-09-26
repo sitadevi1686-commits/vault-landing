@@ -24,7 +24,7 @@ export function clusterVerdict(input: VerdictInput): ClusterVerdict {
       tone: "offline",
       title: "Control panel is not reachable",
       detail:
-        "Start Vault on this machine, then refresh. The console reads the local control panel.",
+        "Start Hydras on this machine, then refresh. The console reads the local control panel.",
     };
   }
   if (input.unavailable > 0) {
@@ -41,7 +41,7 @@ export function clusterVerdict(input: VerdictInput): ClusterVerdict {
       title: "Your data is repairing",
       detail:
         weak > 0
-          ? `${weak} chunk${weak === 1 ? "" : "s"} ${weak === 1 ? "is" : "are"} below the replica target. Vault is copying them back.`
+          ? `${weak} chunk${weak === 1 ? "" : "s"} ${weak === 1 ? "is" : "are"} below the replica target. Hydras is copying them back.`
           : `${input.openIncidents} incident${input.openIncidents === 1 ? "" : "s"} still open. Copies are being restored.`,
     };
   }

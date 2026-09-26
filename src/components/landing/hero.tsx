@@ -47,7 +47,7 @@ export function Hero() {
             variants={item}
             className="mt-6 max-w-lg text-lg leading-relaxed text-pretty text-muted-foreground"
           >
-            Vault copies every file to three nodes. When a disk dies or a machine drops off the
+            Hydras copies every file to three nodes. When a disk dies or a machine drops off the
             network — protecting photo libraries, ML&nbsp;dataset checkpoints, backup archives, or
             SaaS&nbsp;upload stores — your files keep serving and the missing copy is rebuilt
             automatically.
@@ -58,7 +58,7 @@ export function Hero() {
               href={siteConfig.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="View Vault on GitHub (opens in new tab)"
+              aria-label="View Hydras on GitHub (opens in new tab)"
               className={cn(pillSecondary, pillSizes.lg)}
             >
               <GithubIcon className="size-4" aria-hidden="true" />

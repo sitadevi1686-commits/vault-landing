@@ -39,7 +39,7 @@ export function DownloadButton({ size = "lg", className }: DownloadButtonProps) 
       className={cn(pillPrimary, pillSizes.lg, className)}
     >
       {build ? <OSIcon os={build.os} className="size-4" /> : <ArrowDown className="size-4" />}
-      {build ? `Download for ${build.label}` : "Download Vault"}
+      {build ? `Download for ${build.label}` : "Download Hydras"}
     </a>
   );
 }

@@ -51,7 +51,7 @@ export function Footer() {
         </div>
       </div>
       <div className="mx-auto mt-10 flex max-w-7xl flex-col gap-2 px-5 text-xs text-muted-foreground/70 sm:flex-row sm:justify-between sm:px-8">
-        <p>© {new Date().getFullYear()} Vault</p>
+        <p>© {new Date().getFullYear()} Hydras</p>
         <p>Storage engine built on SeaweedFS (Apache-2.0).</p>
       </div>
     </footer>

@@ -59,7 +59,7 @@ export function HowItWorks() {
           <SectionHeading
             eyebrow="How it works"
             title="Watch a node fail and heal."
-            description="This is the loop Vault runs whenever a machine disappears: notice it, copy what was lost from the survivors, and prove the data is intact."
+            description="This is the loop Hydras runs whenever a machine disappears: notice it, copy what was lost from the survivors, and prove the data is intact."
           />
         </Reveal>
 
@@ -119,7 +119,7 @@ export function HowItWorks() {
                 aria-live="polite"
                 className="mt-2 min-h-12 rounded-lg border border-white/[0.06] bg-black/30 px-4 py-3 font-mono text-xs leading-relaxed text-bone/80"
               >
-                <span className="text-ember-soft">$ vault status</span>
+                <span className="text-ember-soft">$ hydras status</span>
                 <br />
                 {describeRingState(state)}
               </p>

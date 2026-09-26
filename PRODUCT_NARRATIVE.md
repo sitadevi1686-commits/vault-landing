@@ -1,10 +1,10 @@
-# Project narrative rule (Vault)
+# Project narrative rule (Hydras)
 
-Always shape Vault work around **real-world usefulness**, not only systems jargon.
+Always shape Hydras work around **real-world usefulness**, not only systems jargon.
 
 ## Positioning
 
-Vault solves: **keep important files available when disks, machines, or networks fail**, and **detect/repair silent corruption** — the same class of problem as Amazon S3 / backup stores / SaaS upload backends, runnable on a laptop for the hackathon.
+Hydras solves: **keep important files available when disks, machines, or networks fail**, and **detect/repair silent corruption** — the same class of problem as Amazon S3 / backup stores / SaaS upload backends, runnable on a laptop for the hackathon.
 
 ## Every surface must answer “so what?”
 
@@ -12,9 +12,9 @@ Vault solves: **keep important files available when disks, machines, or networks
 |---------|----------------|
 | Landing `/` | Who needs this (backups, media, ML datasets, SaaS uploads) + proof strip |
 | `/console` | Live health framed as “your data is safe / at risk / repairing” |
-| README / demos | Requirement → real failure → Vault behavior |
+| README / demos | Requirement → real failure → Hydras behavior |
 | Chaos scripts | Narrate as outage / bit-rot / recovery time (RTO) |
-| Pitch | 30s: real problem → Vault → live kill-node demo |
+| Pitch | 30s: real problem → Hydras → live kill-node demo |
 
 ## Do not
 

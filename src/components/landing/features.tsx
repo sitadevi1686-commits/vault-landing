@@ -47,7 +47,7 @@ export function Features() {
                 Built for the day <span className="text-ember-gradient">something breaks.</span>
               </>
             }
-            description="Disks wear out, laptops get unplugged, and cables get kicked. Each part of Vault handles one of those failures, so files stay readable through them."
+            description="Disks wear out, laptops get unplugged, and cables get kicked. Each part of Hydras handles one of those failures, so files stay readable through them."
           />
         </Reveal>
 

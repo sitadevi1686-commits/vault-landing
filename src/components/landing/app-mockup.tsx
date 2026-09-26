@@ -49,7 +49,7 @@ export function AppMockup() {
         <span className="size-2.5 rounded-full bg-[#ff5f57]" />
         <span className="size-2.5 rounded-full bg-[#febc2e]" />
         <span className="size-2.5 rounded-full bg-[#28c840]" />
-        <span className="mx-auto font-mono text-[10px] text-muted-foreground">Vault — local cluster</span>
+        <span className="mx-auto font-mono text-[10px] text-muted-foreground">Hydras — local cluster</span>
         <span className="flex items-center gap-1 rounded-full bg-ok/10 px-2 py-0.5 text-[9px] font-medium text-ok">
           <span className="size-1.5 rounded-full bg-ok" />
           Protected

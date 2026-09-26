@@ -20,7 +20,7 @@ const sora = Sora({
 });
 
 export const metadata: Metadata = {
-  title: "Vault — storage that survives failure",
+  title: "Hydras — storage that survives failure",
   description:
     "Fault-tolerant distributed object storage in a desktop app. Every file is replicated across nodes and repaired automatically when a disk dies.",
 };

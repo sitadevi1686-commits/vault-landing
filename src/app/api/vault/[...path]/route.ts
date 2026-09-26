@@ -29,12 +29,12 @@ async function panelToken(origin: string): Promise<string> {
     signal: AbortSignal.timeout(4000),
   });
   if (!page.ok) {
-    throw new Error("Vault control panel did not respond");
+    throw new Error("Hydras control panel did not respond");
   }
   const html = await page.text();
   const match = html.match(/name="vault-token" content="([A-Za-z0-9]+)"/);
   if (!match) {
-    throw new Error("Vault control panel did not return a session token");
+    throw new Error("Hydras control panel did not return a session token");
   }
   cachedToken = { value: match[1], at: Date.now() };
   return match[1];
@@ -86,7 +86,7 @@ async function forward(
     return NextResponse.json(
       {
         ok: false,
-        error: "Vault is not running on this machine. Start it, then refresh.",
+        error: "Hydras is not running on this machine. Start it, then refresh.",
       },
       { status: 503 },
     );
