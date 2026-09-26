@@ -4,7 +4,7 @@ export const SHARED_LIBRARY_URL = "https://levy-poor-minus-import.trycloudflare.
 
 const SHARED_HOSTS = new Set(["hydras.software", "www.hydras.software"]);
 
-export const MAX_UPLOAD_BYTES = 12 * 1024 * 1024;
+export const MAX_UPLOAD_BYTES = 32 * 1024 * 1024;
 
 export function librarySyncUrl(hostname: string): string {
   if (SHARED_HOSTS.has(hostname)) return SHARED_LIBRARY_URL;

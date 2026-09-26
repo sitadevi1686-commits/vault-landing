@@ -105,7 +105,7 @@ export function useLibrary() {
     blobFor: (id: string) => blobs.current.get(id),
     async upload(file: File, bucket: BucketId) {
       if (file.size > MAX_UPLOAD_BYTES) {
-        toast.error("Choose a file up to 12 MB so both sites can download it.");
+        toast.error("Choose a file up to 32 MB so both sites can download it.");
         return null;
       }
       const id = crypto.randomUUID();
@@ -116,7 +116,10 @@ export function useLibrary() {
       }
       const saved = await fetch(libraryFileUrl(window.location.hostname, id), {
         method: "PUT",
-        headers: { "Content-Type": file.type || "application/octet-stream" },
+        headers: {
+          "Content-Type": file.type || "application/octet-stream",
+          "X-Hydras-File-Name": encodeURIComponent(name),
+        },
         body: file,
       });
       if (!saved.ok) {
@@ -144,16 +147,15 @@ export function useLibrary() {
           saveDownload(await response.blob(), file.name);
           return;
         }
+        if (response.status === 404) {
+          toast.error("That row has no file bytes yet. Upload the file again.");
+          return;
+        }
       } catch {
-        /* Sample records have no stored bytes, so the receipt below is the download. */
+        toast.error("The shared server did not send the file.");
+        return;
       }
-      saveDownload(
-        new Blob(
-          [`${file.name}\n\nThis sample file stays readable because ${health.copiesOnline} of 3 copies are still online.\nCopies: ${file.replicas.join(", ")}\n`],
-          { type: "text/plain" },
-        ),
-        `${file.name}.txt`,
-      );
+      toast.error("That row has no file bytes yet. Upload the file again.");
     },
     addRecord(input: { name: string; bucket: BucketId; bytes?: number }) {
       const id = crypto.randomUUID();

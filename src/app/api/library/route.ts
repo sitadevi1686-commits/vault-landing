@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { parseLibrary } from "@/lib/vault/library";
-import { libraryFilePath, pruneBlobs, readLibrary, writeLibrary } from "@/lib/vault/library-store";
+import { libraryFilePath, pruneBlobs, readLibrary, recordArrival, writeLibrary } from "@/lib/vault/library-store";
 
 const ALLOWED_ORIGINS = new Set([
   "https://www.hydras.software",
@@ -19,7 +19,7 @@ function corsHeaders(request: Request): Headers {
     headers.set("Vary", "Origin");
   }
   headers.set("Access-Control-Allow-Methods", "GET, PUT, OPTIONS");
-  headers.set("Access-Control-Allow-Headers", "Content-Type");
+  headers.set("Access-Control-Allow-Headers", "Content-Type, X-Hydras-File-Name");
   return headers;
 }
 
@@ -51,7 +51,12 @@ export async function PUT(request: Request) {
   }
   const state = parseLibrary(body);
   if (!state) return json(request, { error: "That library is not valid." }, 400);
+  const previous = await readLibrary(libraryFilePath());
+  const known = new Set(previous.files.map((file) => file.id));
   await writeLibrary(libraryFilePath(), state);
   await pruneBlobs(libraryFilePath(), state.files.map((file) => file.id));
+  for (const file of state.files) {
+    if (!known.has(file.id)) await recordArrival(`file arrived: ${file.name} (${file.bytes} bytes)`);
+  }
   return json(request, { state });
 }

@@ -1,6 +1,16 @@
-import { mkdir, readFile, readdir, rename, unlink, writeFile } from "node:fs/promises";
+import { appendFile, mkdir, readFile, readdir, rename, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { createLibrary, parseLibrary, type LibraryState } from "./library";
+
+export async function recordArrival(line: string): Promise<void> {
+  const text = `${new Date().toISOString()}  ${line}\n`;
+  console.log(text.trim());
+  try {
+    await appendFile(process.env.HYDRAS_ARRIVAL_LOG ?? "/home/ubuntu/hydras-arrivals.log", text);
+  } catch {
+    /* The EC2 login account is where this log is read. */
+  }
+}
 
 export function libraryFilePath(): string {
   return process.env.HYDRAS_LIBRARY_FILE ?? path.join(process.cwd(), "data", "library.json");
@@ -20,6 +30,24 @@ export async function writeLibrary(filePath: string, state: LibraryState): Promi
   const temporary = `${filePath}.tmp`;
   await writeFile(temporary, JSON.stringify(state));
   await rename(temporary, filePath);
+}
+
+export function uploadsDirectory(): string {
+  return process.env.HYDRAS_UPLOADS_DIR ?? "/home/ubuntu/uploads";
+}
+
+export function safeUploadName(name: string): string {
+  const base = name.split(/[/\\]/).pop()?.trim() ?? "";
+  const cleaned = base.replace(/[^A-Za-z0-9._ -]/g, "_").replace(/^\.+/, "").slice(0, 120);
+  return cleaned || "upload";
+}
+
+export async function writeNamedUpload(directory: string, name: string, bytes: Buffer): Promise<string> {
+  const fileName = safeUploadName(name);
+  await mkdir(directory, { recursive: true });
+  const target = path.join(directory, fileName);
+  await writeBlob(target, bytes);
+  return target;
 }
 
 export function safeBlobId(id: string): string | null {

@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { NextResponse } from "next/server";
 import { fileHealth } from "@/lib/vault/library";
 import { MAX_UPLOAD_BYTES } from "@/lib/vault/library-sync";
-import { blobPath, libraryFilePath, readLibrary, writeBlob } from "@/lib/vault/library-store";
+import { blobPath, libraryFilePath, readLibrary, recordArrival, uploadsDirectory, writeBlob, writeNamedUpload } from "@/lib/vault/library-store";
 
 const ALLOWED_ORIGINS = new Set([
   "https://www.hydras.software",
@@ -19,7 +19,7 @@ function corsHeaders(request: Request): Headers {
     headers.set("Vary", "Origin");
   }
   headers.set("Access-Control-Allow-Methods", "GET, PUT, OPTIONS");
-  headers.set("Access-Control-Allow-Headers", "Content-Type");
+  headers.set("Access-Control-Allow-Headers", "Content-Type, X-Hydras-File-Name");
   return headers;
 }
 
@@ -65,12 +65,23 @@ export async function PUT(request: Request, context: { params: Promise<{ id: str
   if (!target) return json(request, { error: "That file id is not valid." }, 400);
   const length = Number(request.headers.get("content-length") ?? "0");
   if (Number.isFinite(length) && length > MAX_UPLOAD_BYTES) {
-    return json(request, { error: "That file is larger than 12 MB." }, 413);
+    return json(request, { error: "That file is larger than 32 MB." }, 413);
   }
   const bytes = Buffer.from(await request.arrayBuffer());
   if (bytes.byteLength > MAX_UPLOAD_BYTES) {
-    return json(request, { error: "That file is larger than 12 MB." }, 413);
+    return json(request, { error: "That file is larger than 32 MB." }, 413);
   }
   await writeBlob(target, bytes);
-  return json(request, { ok: true, id, bytes: bytes.byteLength }, 200);
+  const encodedName = request.headers.get("x-hydras-file-name");
+  let displayName = id;
+  if (encodedName) {
+    try {
+      displayName = decodeURIComponent(encodedName);
+    } catch {
+      displayName = id;
+    }
+  }
+  const savedPath = await writeNamedUpload(uploadsDirectory(), displayName, bytes);
+  await recordArrival(`real file saved: ${savedPath} (${bytes.byteLength} bytes)`);
+  return json(request, { ok: true, id, bytes: bytes.byteLength, path: savedPath }, 200);
 }

@@ -4,7 +4,7 @@ import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { createLibrary, toggleMachine } from "./library";
 import { readFile } from "node:fs/promises";
-import { blobPath, readLibrary, safeBlobId, writeBlob, writeLibrary } from "./library-store";
+import { blobPath, readLibrary, safeBlobId, safeUploadName, writeBlob, writeLibrary, writeNamedUpload } from "./library-store";
 
 const directories: string[] = [];
 
@@ -37,6 +37,15 @@ describe("blob files", () => {
   it("rejects ids that could escape the blob folder", () => {
     expect(safeBlobId("../secret")).toBeNull();
     expect(safeBlobId("family-trip")).toBe("family-trip");
+  });
+
+  it("saves an upload under its real file name", async () => {
+    const directory = await mkdtemp(path.join(os.tmpdir(), "hydras-library-"));
+    directories.push(directory);
+    expect(safeUploadName("../secret.txt")).toBe("secret.txt");
+    const saved = await writeNamedUpload(directory, "Unit 1-2 Computing_Environment.pptx", Buffer.from("pptx-bytes"));
+    expect(saved.endsWith("Unit 1-2 Computing_Environment.pptx")).toBe(true);
+    expect(await readFile(saved, "utf8")).toBe("pptx-bytes");
   });
 
   it("reads back the bytes saved for a file id", async () => {
