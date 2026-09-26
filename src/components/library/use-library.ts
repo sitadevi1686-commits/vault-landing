@@ -5,16 +5,18 @@ import { toast } from "sonner";
 import {
   addFile,
   createLibrary,
+  fileHealth,
   parseLibrary,
   RECORD_BYTES,
   removeFile,
   toggleMachine,
   uniqueName,
   type BucketId,
+  type LibraryFile,
   type LibraryResult,
   type LibraryState,
 } from "@/lib/vault/library";
-import { librarySyncUrl, sameLibrary } from "@/lib/vault/library-sync";
+import { libraryFileUrl, librarySyncUrl, MAX_UPLOAD_BYTES, sameLibrary } from "@/lib/vault/library-sync";
 
 const STORAGE_KEY = "hydras-library-v1";
 
@@ -101,11 +103,24 @@ export function useLibrary() {
   return {
     state,
     blobFor: (id: string) => blobs.current.get(id),
-    upload(file: File, bucket: BucketId) {
+    async upload(file: File, bucket: BucketId) {
+      if (file.size > MAX_UPLOAD_BYTES) {
+        toast.error("Choose a file up to 12 MB so both sites can download it.");
+        return null;
+      }
       const id = crypto.randomUUID();
       const name = uniqueName(state, file.name);
       if (!name) {
         toast.error("Use a file name without folders, up to 180 characters.");
+        return null;
+      }
+      const saved = await fetch(libraryFileUrl(window.location.hostname, id), {
+        method: "PUT",
+        headers: { "Content-Type": file.type || "application/octet-stream" },
+        body: file,
+      });
+      if (!saved.ok) {
+        toast.error("The shared server did not store this file.");
         return null;
       }
       const next = apply(
@@ -116,6 +131,29 @@ export function useLibrary() {
       blobs.current.set(id, file);
       publish(next);
       return id;
+    },
+    async download(file: LibraryFile) {
+      const health = fileHealth(file, state);
+      if (!health.readable) {
+        toast.error("Every copy is down, so this file cannot be read.");
+        return;
+      }
+      try {
+        const response = await fetch(libraryFileUrl(window.location.hostname, file.id));
+        if (response.ok) {
+          saveDownload(await response.blob(), file.name);
+          return;
+        }
+      } catch {
+        /* Sample records have no stored bytes, so the receipt below is the download. */
+      }
+      saveDownload(
+        new Blob(
+          [`${file.name}\n\nThis sample file stays readable because ${health.copiesOnline} of 3 copies are still online.\nCopies: ${file.replicas.join(", ")}\n`],
+          { type: "text/plain" },
+        ),
+        `${file.name}.txt`,
+      );
     },
     addRecord(input: { name: string; bucket: BucketId; bytes?: number }) {
       const id = crypto.randomUUID();
@@ -152,4 +190,15 @@ export function useLibrary() {
       toast.success("Library reset to the sample files.");
     },
   };
+}
+
+function saveDownload(blob: Blob, name: string) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = name;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 }

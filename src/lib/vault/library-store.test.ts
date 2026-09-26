@@ -3,7 +3,8 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { createLibrary, toggleMachine } from "./library";
-import { readLibrary, writeLibrary } from "./library-store";
+import { readFile } from "node:fs/promises";
+import { blobPath, readLibrary, safeBlobId, writeBlob, writeLibrary } from "./library-store";
 
 const directories: string[] = [];
 
@@ -29,5 +30,22 @@ describe("library store", () => {
     await writeLibrary(filePath, stopped.state);
     const saved = await readLibrary(filePath);
     expect(saved.machines.find((machine) => machine.id === "n5")?.running).toBe(false);
+  });
+});
+
+describe("blob files", () => {
+  it("rejects ids that could escape the blob folder", () => {
+    expect(safeBlobId("../secret")).toBeNull();
+    expect(safeBlobId("family-trip")).toBe("family-trip");
+  });
+
+  it("reads back the bytes saved for a file id", async () => {
+    const directory = await mkdtemp(path.join(os.tmpdir(), "hydras-library-"));
+    directories.push(directory);
+    const target = blobPath(path.join(directory, "library.json"), "photo-1");
+    expect(target).not.toBeNull();
+    if (!target) return;
+    await writeBlob(target, Buffer.from("hello photo"));
+    expect(await readFile(target, "utf8")).toBe("hello photo");
   });
 });

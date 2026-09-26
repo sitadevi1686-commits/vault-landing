@@ -10,6 +10,7 @@
 .library-copies span { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 11px; color: #e6d9c8; }
 .library-copies span.is-down { color: #ffb077; border-color: #ff793e40; }
 .library-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.download-button { padding: 8px 12px; }
 .record-card { margin-bottom: 22px; }
 .record-form { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .record-form .search-field { flex: 1; min-width: 180px; }

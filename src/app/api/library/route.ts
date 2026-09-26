@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { parseLibrary } from "@/lib/vault/library";
-import { libraryFilePath, readLibrary, writeLibrary } from "@/lib/vault/library-store";
+import { libraryFilePath, pruneBlobs, readLibrary, writeLibrary } from "@/lib/vault/library-store";
 
 const ALLOWED_ORIGINS = new Set([
   "https://www.hydras.software",
@@ -52,5 +52,6 @@ export async function PUT(request: Request) {
   const state = parseLibrary(body);
   if (!state) return json(request, { error: "That library is not valid." }, 400);
   await writeLibrary(libraryFilePath(), state);
+  await pruneBlobs(libraryFilePath(), state.files.map((file) => file.id));
   return json(request, { state });
 }

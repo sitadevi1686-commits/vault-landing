@@ -1,4 +1,4 @@
-import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, rename, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { createLibrary, parseLibrary, type LibraryState } from "./library";
 
@@ -20,4 +20,40 @@ export async function writeLibrary(filePath: string, state: LibraryState): Promi
   const temporary = `${filePath}.tmp`;
   await writeFile(temporary, JSON.stringify(state));
   await rename(temporary, filePath);
+}
+
+export function safeBlobId(id: string): string | null {
+  if (!/^[A-Za-z0-9][A-Za-z0-9_-]{0,80}$/.test(id)) return null;
+  return id;
+}
+
+export function blobDirectory(libraryPath: string): string {
+  return path.join(path.dirname(libraryPath), "blobs");
+}
+
+export function blobPath(libraryPath: string, id: string): string | null {
+  const safe = safeBlobId(id);
+  if (!safe) return null;
+  return path.join(blobDirectory(libraryPath), safe);
+}
+
+export async function writeBlob(filePath: string, bytes: Buffer): Promise<void> {
+  await mkdir(path.dirname(filePath), { recursive: true });
+  const temporary = `${filePath}.tmp`;
+  await writeFile(temporary, bytes);
+  await rename(temporary, filePath);
+}
+
+export async function pruneBlobs(libraryPath: string, ids: readonly string[]): Promise<void> {
+  const directory = blobDirectory(libraryPath);
+  const keep = new Set(ids);
+  let names: string[] = [];
+  try {
+    names = await readdir(directory);
+  } catch {
+    return;
+  }
+  await Promise.all(
+    names.filter((name) => !keep.has(name) && !name.endsWith(".tmp")).map((name) => unlink(path.join(directory, name))),
+  );
 }

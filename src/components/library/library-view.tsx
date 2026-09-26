@@ -45,7 +45,7 @@ export function LibraryView() {
   function onUpload(list: FileList | null) {
     const file = list?.[0];
     if (!file) return;
-    reveal(library.upload(file, recordBucket));
+    void library.upload(file, recordBucket).then((id) => reveal(id));
     if (fileInput.current) fileInput.current.value = "";
   }
 
@@ -152,7 +152,7 @@ export function LibraryView() {
               ) : (
                 <div className="table-scroll">
                   <table>
-                    <thead><tr><th>File</th><th>Folder</th><th>Size</th><th>Copies</th></tr></thead>
+                    <thead><tr><th>File</th><th>Folder</th><th>Size</th><th>Copies</th><th>Download</th></tr></thead>
                     <tbody>
                       {visible.map((file) => {
                         const health = fileHealth(file, library.state.machines);
@@ -162,6 +162,7 @@ export function LibraryView() {
                             <td>{BUCKETS.find((item) => item.id === file.bucket)?.label}</td>
                             <td>{formatBytes(file.bytes)}</td>
                             <td><span className={`incident-status ${health.status === "protected" ? "resolved" : ""}`}>{healthLabel(health)}</span></td>
+                            <td><button className="secondary-button download-button" type="button" disabled={!health.readable} onClick={() => void library.download(file)}>Download</button></td>
                           </tr>
                         );
                       })}
@@ -173,9 +174,8 @@ export function LibraryView() {
                 <FileDetail
                   file={selected}
                   machines={library.state.machines}
-                  canDownloadOriginal={Boolean(library.blobFor(selected.id))}
                   confirming={confirmId === selected.id}
-                  onDownload={() => downloadFile(selected, library.state.machines, library.blobFor(selected.id))}
+                  onDownload={() => void library.download(selected)}
                   onAskRemove={() => setConfirmId(selected.id)}
                   onCancel={() => setConfirmId(null)}
                   onRemove={() => { library.remove(selected.id, selected.name); setSelectedId(null); setConfirmId(null); }}
@@ -201,7 +201,6 @@ function Metric({ label, value, hint, accent }: { label: string; value: string; 
 function FileDetail({
   file,
   machines,
-  canDownloadOriginal,
   confirming,
   onDownload,
   onAskRemove,
@@ -210,7 +209,6 @@ function FileDetail({
 }: {
   file: LibraryFile;
   machines: ReturnType<typeof useLibrary>["state"]["machines"];
-  canDownloadOriginal: boolean;
   confirming: boolean;
   onDownload: () => void;
   onAskRemove: () => void;
@@ -230,7 +228,7 @@ function FileDetail({
         })}
       </div>
       <div className="library-actions">
-        <button className="primary-button" type="button" disabled={!health.readable} onClick={onDownload}>{canDownloadOriginal ? "Download" : "Read a copy"}</button>
+        <button className="primary-button" type="button" disabled={!health.readable} onClick={onDownload}>Download</button>
         {confirming ? (
           <>
             <button className="secondary-button" type="button" onClick={onRemove}><Trash2 size={15} />Remove from all machines</button>
@@ -244,19 +242,3 @@ function FileDetail({
   );
 }
 
-function downloadFile(file: LibraryFile, machines: ReturnType<typeof useLibrary>["state"]["machines"], original: Blob | undefined) {
-  const health = fileHealth(file, machines);
-  if (!health.readable) return;
-  const blob = original ?? new Blob(
-    [`${file.name}\n\nThis sample file stays readable because ${health.copiesOnline} of 3 copies are still online.\nCopies: ${file.replicas.join(", ")}\n`],
-    { type: "text/plain" },
-  );
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = original ? file.name : `${file.name}.txt`;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
