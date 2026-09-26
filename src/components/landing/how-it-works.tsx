@@ -28,7 +28,7 @@ const STEPS: { phase: RingPhase; title: string; body: string }[] = [
   },
 ];
 
-function describe(state: RingState): string {
+function describeRingState(state: RingState): string {
   const failed = state.failedNode === null ? "" : `node-${state.failedNode + 1}`;
   switch (state.phase) {
     case "healthy":
@@ -104,6 +104,7 @@ export function HowItWorks() {
                 </span>
                 <button
                   type="button"
+                  aria-pressed={paused}
                   onClick={() => setPaused((p) => !p)}
                   className="inline-flex items-center gap-1.5 rounded-full border border-white/10 px-3 py-1.5 text-xs text-bone/80 transition-colors hover:border-white/20 hover:text-bone focus-visible:ring-2 focus-visible:ring-ember-soft focus-visible:outline-none"
                 >
@@ -120,7 +121,7 @@ export function HowItWorks() {
               >
                 <span className="text-ember-soft">$ vault status</span>
                 <br />
-                {describe(state)}
+                {describeRingState(state)}
               </p>
             </div>
           </Reveal>

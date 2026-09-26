@@ -88,6 +88,8 @@ export function DownloadSection() {
             <div className="relative mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm">
               <a
                 href={siteConfig.checksumsUrl}
+                target="_blank"
+                rel="noreferrer"
                 className="inline-flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-bone"
               >
                 <FileCheck className="size-4 text-ember-soft" />

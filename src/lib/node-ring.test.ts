@@ -3,6 +3,7 @@ import {
   CYCLE_MS,
   NODE_COUNT,
   PHASE_MS,
+  copiesFor,
   msUntilNextPhase,
   ringStateAt,
 } from "./node-ring";
@@ -57,4 +58,34 @@ describe("msUntilNextPhase", () => {
     expect(msUntilNextPhase(PHASE_MS.healthy)).toBe(PHASE_MS.failed);
     expect(msUntilNextPhase(CYCLE_MS)).toBe(PHASE_MS.healthy);
   });
+
+  it("returns PHASE_MS.healed at the exact start of the healed phase", () => {
+    const healedStart = PHASE_MS.healthy + PHASE_MS.failed + PHASE_MS.repairing;
+    expect(msUntilNextPhase(healedStart)).toBe(PHASE_MS.healed);
+  });
+
+  it("returns 1 ms before the cycle ends correctly", () => {
+    expect(msUntilNextPhase(CYCLE_MS - 1)).toBe(1);
+  });
 });
+
+describe("copiesFor", () => {
+  it("returns 3 copies when healthy", () => {
+    expect(copiesFor(ringStateAt(0))).toBe(3);
+  });
+
+  it("returns 2 copies when a node has failed", () => {
+    expect(copiesFor(ringStateAt(PHASE_MS.healthy))).toBe(2);
+  });
+
+  it("returns 2 copies while repairing", () => {
+    expect(copiesFor(ringStateAt(PHASE_MS.healthy + PHASE_MS.failed))).toBe(2);
+  });
+
+  it("returns 3 copies once healed", () => {
+    expect(
+      copiesFor(ringStateAt(PHASE_MS.healthy + PHASE_MS.failed + PHASE_MS.repairing)),
+    ).toBe(3);
+  });
+});
+

@@ -74,6 +74,7 @@ export function HeroScene() {
         </div>
 
         <div
+          aria-hidden="true"
           className="glass-card absolute -top-5 right-2 hidden items-center gap-2.5 rounded-lg px-3.5 py-2.5 sm:-right-8 sm:flex"
           style={{ transform: "translateZ(90px)" }}
         >
@@ -87,6 +88,7 @@ export function HeroScene() {
         </div>
 
         <div
+          aria-hidden="true"
           className="glass-card absolute -bottom-6 left-2 hidden items-center gap-2.5 rounded-lg px-3.5 py-2.5 sm:-left-10 sm:flex"
           style={{ transform: "translateZ(60px)" }}
         >

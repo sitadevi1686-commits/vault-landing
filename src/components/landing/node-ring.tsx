@@ -1,7 +1,8 @@
 "use client";
 
+import { useId } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { NODE_COUNT, PHASE_MS, type RingState } from "@/lib/node-ring";
+import { NODE_COUNT, PHASE_MS, copiesFor, type RingState } from "@/lib/node-ring";
 
 const SIZE = 440;
 const CENTER = SIZE / 2;
@@ -48,11 +49,13 @@ function trimmedLine(from: number, to: number) {
   return { x1: a.x + ux * pad, y1: a.y + uy * pad, x2: b.x - ux * pad, y2: b.y - uy * pad };
 }
 
-export function copiesFor(state: RingState): number {
-  return state.phase === "failed" || state.phase === "repairing" ? 2 : 3;
-}
-
 export function NodeRing({ state }: { state: RingState }) {
+  // useId() produces document-unique IDs so multiple NodeRing instances
+  // (e.g. docs page, story) don't share the same SVG gradient references.
+  const id = useId();
+  const hubId = `${id}-hub`;
+  const repairLineId = `${id}-repair-line`;
+
   const reduce = useReducedMotion();
   const degraded = copiesFor(state) < 3;
   const repairSeconds = (PHASE_MS.repairing / 1000) * 0.9;
@@ -60,11 +63,11 @@ export function NodeRing({ state }: { state: RingState }) {
   return (
     <svg viewBox={`0 0 ${SIZE} ${SIZE}`} className="h-auto w-full" role="img" aria-label="Five storage nodes arranged in a ring">
       <defs>
-        <radialGradient id="ring-hub" cx="0.5" cy="0.5" r="0.5">
+        <radialGradient id={hubId} cx="0.5" cy="0.5" r="0.5">
           <stop offset="0" stopColor="#ff4d1c" stopOpacity="0.35" />
           <stop offset="1" stopColor="#ff4d1c" stopOpacity="0" />
         </radialGradient>
-        <linearGradient id="repair-line" x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id={repairLineId} x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="#ff8a3d" />
           <stop offset="1" stopColor="#ff4d1c" />
         </linearGradient>
@@ -102,7 +105,7 @@ export function NodeRing({ state }: { state: RingState }) {
                 <motion.g key={`repair-${state.cycle}-${source}`} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
                   <motion.line
                     {...line}
-                    stroke="url(#repair-line)"
+                    stroke={`url(#${repairLineId})`}
                     strokeWidth="2.5"
                     strokeLinecap="round"
                     initial={reduce ? false : { pathLength: 0 }}
@@ -125,7 +128,7 @@ export function NodeRing({ state }: { state: RingState }) {
           : null}
       </AnimatePresence>
 
-      <circle cx={CENTER} cy={CENTER} r={78} fill="url(#ring-hub)" />
+      <circle cx={CENTER} cy={CENTER} r={78} fill={`url(#${hubId})`} />
       <circle cx={CENTER} cy={CENTER} r={46} fill="#141416" stroke="rgb(245 241 234 / 0.1)" />
       <text
         x={CENTER}

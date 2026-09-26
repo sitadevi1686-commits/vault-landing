@@ -60,7 +60,7 @@ export function Features() {
                   className="pointer-events-none absolute -top-16 -right-16 size-40 rounded-full bg-ember/20 opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
                 />
                 <span className="relative flex size-10 items-center justify-center rounded-lg border border-ember/25 bg-ember/10">
-                  <feature.icon className="size-5 text-ember-soft" />
+                  <feature.icon className="size-5 text-ember-soft" aria-hidden="true" />
                 </span>
                 <h3 className="relative mt-5 font-heading text-lg font-semibold tracking-tight">{feature.title}</h3>
                 <p className="relative mt-2 text-sm leading-relaxed text-pretty text-muted-foreground">

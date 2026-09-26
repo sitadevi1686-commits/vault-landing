@@ -3,6 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { msUntilNextPhase, ringStateAt, type RingState } from "@/lib/node-ring";
 
+/** One animation frame at 60 fps — added to phase durations so setTimeout fires after the phase boundary, not on it. */
+const ONE_FRAME_MS = 16;
+
 export function useRingSimulation(active: boolean): RingState {
   const [elapsed, setElapsed] = useState(0);
   const elapsedRef = useRef(0);
@@ -18,7 +21,7 @@ export function useRingSimulation(active: boolean): RingState {
         elapsedRef.current = now;
         setElapsed(now);
         schedule(now);
-      }, msUntilNextPhase(from) + 16);
+      }, msUntilNextPhase(from) + ONE_FRAME_MS);
     };
 
     schedule(elapsedRef.current);
@@ -27,3 +30,4 @@ export function useRingSimulation(active: boolean): RingState {
 
   return ringStateAt(elapsed);
 }
+

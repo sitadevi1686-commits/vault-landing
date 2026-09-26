@@ -4,6 +4,7 @@ import { useEffect, useRef, type CSSProperties } from "react";
 import {
   motion,
   useAnimationFrame,
+  useInView,
   useMotionValue,
   useReducedMotion,
   type MotionValue,
@@ -113,6 +114,9 @@ function ShardNode({
 export function DataShards() {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
+  // Only drive animation when the hero section is visible — stops 60fps
+  // cos/sin work on all 10 shard nodes while the user has scrolled away.
+  const inView = useInView(ref, { margin: "200px 0px" });
   const time = useMotionValue(0);
   const width = useMotionValue(560);
 
@@ -125,7 +129,7 @@ export function DataShards() {
   }, [width]);
 
   useAnimationFrame((ms) => {
-    if (!reduce) time.set(ms / 1000);
+    if (!reduce && inView) time.set(ms / 1000);
   });
 
   return (

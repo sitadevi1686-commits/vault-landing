@@ -47,19 +47,21 @@ export function Hero() {
             variants={item}
             className="mt-6 max-w-lg text-lg leading-relaxed text-pretty text-muted-foreground"
           >
-            Vault copies every file to three storage nodes. When a disk dies or a machine drops off
-            the network, your photos, backups, and datasets keep serving, and the missing copy is
-            rebuilt automatically.
+            Vault copies every file to three nodes. When a disk dies or a machine drops off the
+            network — protecting photo libraries, ML&nbsp;dataset checkpoints, backup archives, or
+            SaaS&nbsp;upload stores — your files keep serving and the missing copy is rebuilt
+            automatically.
           </motion.p>
           <motion.div variants={item} className="mt-9 flex flex-wrap items-center gap-3">
             <DownloadButton />
             <a
               href={siteConfig.githubUrl}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
+              aria-label="View Vault on GitHub (opens in new tab)"
               className={cn(pillSecondary, pillSizes.lg)}
             >
-              <GithubIcon className="size-4" />
+              <GithubIcon className="size-4" aria-hidden="true" />
               View on GitHub
             </a>
           </motion.div>

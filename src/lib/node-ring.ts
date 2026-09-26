@@ -46,3 +46,9 @@ export function ringStateAt(elapsedMs: number): RingState {
 export function msUntilNextPhase(elapsedMs: number): number {
   return locate(elapsedMs).remaining;
 }
+
+/** Returns the number of live copies for the given ring state (2 when degraded, 3 when healthy/healed). */
+export function copiesFor(state: RingState): number {
+  return state.phase === "failed" || state.phase === "repairing" ? 2 : 3;
+}
+

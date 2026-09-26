@@ -1,3 +1,4 @@
+import { useId } from "react";
 import { Activity, Boxes, HardDrive, LayoutGrid, RefreshCw, Settings } from "lucide-react";
 import { cn } from "cn";
 
@@ -30,8 +31,20 @@ function chartPath(values: readonly number[], width: number, height: number) {
 const CHART = chartPath(THROUGHPUT, 300, 72);
 
 export function AppMockup() {
+  // useId() guarantees unique IDs even if AppMockup renders more than once,
+  // preventing duplicate SVG gradient ID collisions in the document.
+  const id = useId();
+  const areaGradId = `${id}-area`;
+  const lineGradId = `${id}-line`;
+
   return (
-    <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl border border-white/10 bg-[#111113] shadow-[0_40px_120px_-30px_rgb(0_0_0/0.9),inset_0_1px_0_rgb(245_241_234/0.06)]">
+    // aria-hidden: the entire mockup is a decorative UI illustration.
+    // All the "real" text (node counts, stats) is conveyed through adjacent
+    // labelled sections; duplicating it here only pollutes the AT tree.
+    <div
+      aria-hidden="true"
+      className="relative aspect-[16/10] w-full overflow-hidden rounded-xl border border-white/10 bg-[#111113] shadow-[0_40px_120px_-30px_rgb(0_0_0/0.9),inset_0_1px_0_rgb(245_241_234/0.06)]"
+    >
       <div className="flex h-8 items-center gap-2 border-b border-white/[0.06] bg-[#0e0e10] px-3">
         <span className="size-2.5 rounded-full bg-[#ff5f57]" />
         <span className="size-2.5 rounded-full bg-[#febc2e]" />
@@ -76,17 +89,17 @@ export function AppMockup() {
             </div>
             <svg viewBox="0 0 300 72" className="mt-1.5 h-12 w-full sm:h-16" preserveAspectRatio="none">
               <defs>
-                <linearGradient id="mockup-area" x1="0" y1="0" x2="0" y2="1">
+                <linearGradient id={areaGradId} x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0" stopColor="#ff4d1c" stopOpacity="0.45" />
                   <stop offset="1" stopColor="#ff4d1c" stopOpacity="0" />
                 </linearGradient>
-                <linearGradient id="mockup-line" x1="0" y1="0" x2="1" y2="0">
+                <linearGradient id={lineGradId} x1="0" y1="0" x2="1" y2="0">
                   <stop offset="0" stopColor="#ff4d1c" />
                   <stop offset="1" stopColor="#ff8a3d" />
                 </linearGradient>
               </defs>
-              <path d={CHART.area} fill="url(#mockup-area)" />
-              <path d={CHART.line} fill="none" stroke="url(#mockup-line)" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+              <path d={CHART.area} fill={`url(#${areaGradId})`} />
+              <path d={CHART.line} fill="none" stroke={`url(#${lineGradId})`} strokeWidth="2" vectorEffect="non-scaling-stroke" />
             </svg>
           </div>
 
