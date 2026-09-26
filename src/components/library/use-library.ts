@@ -133,7 +133,7 @@ export function useLibrary() {
       return id;
     },
     async download(file: LibraryFile) {
-      const health = fileHealth(file, state);
+      const health = fileHealth(file, state.machines);
       if (!health.readable) {
         toast.error("Every copy is down, so this file cannot be read.");
         return;
