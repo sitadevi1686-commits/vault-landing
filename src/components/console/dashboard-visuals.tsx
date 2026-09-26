@@ -34,9 +34,9 @@ export function ActivityChart({ samples, connected }: { samples: ActivitySample[
   </section>;
 }
 
-export function ClusterMap({ overview, onNodes }: { overview: VaultOverview | null; onNodes: () => void }) {
+export function ClusterMap({ overview, demo, onNodes }: { overview: VaultOverview | null; demo: boolean; onNodes: () => void }) {
   const zones = overview ? [...new Set([...overview.zones, ...overview.nodes.map((node) => node.zone)])] : [];
-  return <section className="dash-card topology-card" data-tour="topology"><div className="card-heading"><div><h2>Your storage network</h2><p>Independent zones. Resilient copies.</p></div><span className="micro-tag">Local cluster</span></div>
+  return <section className="dash-card topology-card" data-tour="topology"><div className="card-heading"><div><h2>Your storage network</h2><p>Independent zones. Resilient copies.</p></div><span className="micro-tag">{demo ? "Simulated" : "Local cluster"}</span></div>
     <div className="cluster-map"><div className="cluster-orbit orbit-one" /><div className="cluster-orbit orbit-two" /><div className="cluster-core"><Box size={32} /><span>VAULT</span></div>
       {zones.length ? <div className="zone-orbit">{zones.map((zone) => <div className="zone-pill" key={zone}><Layers3 size={15} /><span>{zone.replace("zone-", "Zone ")}</span><div className="node-dots">{overview?.nodes.filter((node) => node.zone === zone).map((node) => <span key={node.id} className={node.running && node.state === "up" && node.link !== "partitioned" ? "up" : "down"} title={`${node.id}: ${node.state}, ${node.link}`} aria-label={`${node.id}: ${node.state}, ${node.link}`} />)}</div></div>)}</div> : <p className="map-empty">Waiting for your storage machines</p>}
     </div><div className="network-footer"><div><strong>{overview ? overview.nodes.length : "—"}</strong><span>machines</span></div><div><strong>{overview ? zones.length : "—"}</strong><span>storage zones</span></div><button className="icon-button round-button" aria-label="Explore storage nodes" onClick={onNodes}><ArrowUpRight size={21} /></button></div>

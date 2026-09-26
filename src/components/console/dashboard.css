@@ -68,6 +68,9 @@
 .connection-notice strong { color: #f2d6be; font-size: 12px; font-weight: 500; }
 .connection-notice p { font-size: 11px; line-height: 1.8; margin: 4px 0 0; }
 .connection-notice code { color: #ffe2cb; overflow-wrap: anywhere; }
+.demo-notice { border-color: #ff793e55; background: linear-gradient(120deg, #ff793e14, #ff793e05); }
+.demo-notice b { color: #ffe2cb; font-weight: 500; }
+.demo-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
 .stats-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 18px; margin-bottom: 20px; }
 .metric-card { border: 1px solid var(--line); border-radius: 17px; background: linear-gradient(125deg,#1b1a19,#161616); padding: 23px; min-height: 160px; }
 .metric-card.accent { background: radial-gradient(ellipse at 100% 0,#ff63221c,transparent 80%),#1d1815; border-color: #ff793e2c; }
