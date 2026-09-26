@@ -1,0 +1,19 @@
+.library-machines { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 22px; }
+.library-machines button { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; min-width: 108px; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--line); background: #191817; color: #efe6da; }
+.library-machines button small { color: #a8967c; font-size: 9px; }
+.library-machines button.is-down { border-color: #ff793e55; color: #ffb077; }
+.library-open { display: block; padding: 0; border: 0; background: none; color: #ede1ce; font: inherit; text-align: left; }
+.library-file.is-selected { background: #ff793e0d; }
+.library-detail { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
+.library-detail p { margin: 8px 0 0; color: #b7aa98; font-size: 12px; line-height: 1.7; }
+.library-copies { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.library-copies span { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 11px; color: #e6d9c8; }
+.library-copies span.is-down { color: #ffb077; border-color: #ff793e40; }
+.library-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.record-card { margin-bottom: 22px; }
+.record-form { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.record-form .search-field { flex: 1; min-width: 180px; }
+.record-form .search-field input { width: 100%; }
+.record-form select { min-width: 130px; }
+.record-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.file-input { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }

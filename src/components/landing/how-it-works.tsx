@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRef, useState } from "react";
 import { useInView } from "motion/react";
 import { Pause, Play } from "lucide-react";
@@ -123,6 +124,9 @@ export function HowItWorks() {
                 <br />
                 {describeRingState(state)}
               </p>
+              <Link href="/live" className="mt-3 inline-flex text-sm text-ember-soft underline-offset-4 hover:underline">
+                Open the two-server view
+              </Link>
             </div>
           </Reveal>
         </div>

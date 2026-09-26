@@ -27,7 +27,7 @@ export function Nav() {
               </a>
             ))}
           </nav>
-          <DownloadButton size="sm" className="ml-2 hidden sm:inline-flex" />
+          <DownloadButton size="sm" className="ml-2 inline-flex px-3 sm:px-4" />
 
           <Sheet>
             <SheetTrigger
