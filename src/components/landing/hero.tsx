@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { LayoutGrid } from "lucide-react";
 import { motion, useReducedMotion, type Variants } from "motion/react";
 import { cn } from "cn";
 import { siteConfig } from "@/lib/site-config";
@@ -54,6 +56,10 @@ export function Hero() {
           </motion.p>
           <motion.div variants={item} className="mt-9 flex flex-wrap items-center gap-3">
             <DownloadButton />
+            <Link href="/console" className={cn(pillSecondary, pillSizes.lg)}>
+              <LayoutGrid className="size-4" aria-hidden="true" />
+              Open console
+            </Link>
             <a
               href={siteConfig.githubUrl}
               target="_blank"
