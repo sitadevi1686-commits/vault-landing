@@ -14,38 +14,89 @@ import {
   type LibraryResult,
   type LibraryState,
 } from "@/lib/vault/library";
+import { librarySyncUrl, sameLibrary } from "@/lib/vault/library-sync";
 
 const STORAGE_KEY = "hydras-library-v1";
 
-function apply(result: LibraryResult, setState: (state: LibraryState) => void, success: string) {
+function apply(result: LibraryResult, success: string): LibraryState | null {
   if (!result.ok) {
     toast.error(result.error);
-    return false;
+    return null;
   }
-  setState(result.state);
   toast.success(success);
-  return true;
+  return result.state;
+}
+
+function savedLibrary(): LibraryState | null {
+  try {
+    return parseLibrary(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null"));
+  } catch {
+    return null;
+  }
 }
 
 export function useLibrary() {
   const [state, setState] = useState<LibraryState>(createLibrary);
   const [ready, setReady] = useState(false);
   const blobs = useRef(new Map<string, Blob>());
+  const writing = useRef(false);
+  const endpoint = useRef("/api/library");
 
   useEffect(() => {
-    try {
-      const saved = parseLibrary(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null"));
-      if (saved) setState(saved);
-    } catch {
-      /* Keep the sample library when stored data is unreadable. */
+    endpoint.current = librarySyncUrl(window.location.hostname);
+    let cancelled = false;
+
+    async function pull(first: boolean) {
+      if (writing.current) return;
+      try {
+        const response = await fetch(endpoint.current, { cache: "no-store" });
+        if (!response.ok) throw new Error("The shared library did not answer");
+        const body: unknown = await response.json();
+        const record = body && typeof body === "object" && "state" in body ? body.state : body;
+        const parsed = parseLibrary(record);
+        if (!parsed || cancelled) return;
+        setState((current) => (sameLibrary(current, parsed) ? current : parsed));
+      } catch {
+        if (first && !cancelled) {
+          const local = savedLibrary();
+          if (local) setState(local);
+        }
+      } finally {
+        if (first && !cancelled) setReady(true);
+      }
     }
-    setReady(true);
+
+    void pull(true);
+    const timer = window.setInterval(() => void pull(false), 2000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
   }, []);
 
   useEffect(() => {
     if (!ready) return;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [ready, state]);
+
+  function publish(next: LibraryState) {
+    setState(next);
+    writing.current = true;
+    void fetch(endpoint.current, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(next),
+    })
+      .then((response) => {
+        if (!response.ok) toast.error("The other Hydras site did not save this file.");
+      })
+      .catch(() => {
+        toast.error("The other Hydras site did not save this file.");
+      })
+      .finally(() => {
+        writing.current = false;
+      });
+  }
 
   return {
     state,
@@ -57,13 +108,13 @@ export function useLibrary() {
         toast.error("Use a file name without folders, up to 180 characters.");
         return null;
       }
-      const saved = apply(
+      const next = apply(
         addFile(state, { id, name, bucket, bytes: file.size, addedAt: Date.now() }),
-        setState,
         `${name} is stored as three copies.`,
       );
-      if (!saved) return null;
+      if (!next) return null;
       blobs.current.set(id, file);
+      publish(next);
       return id;
     },
     addRecord(input: { name: string; bucket: BucketId; bytes?: number }) {
@@ -73,29 +124,31 @@ export function useLibrary() {
         toast.error("Use a file name without folders, up to 180 characters.");
         return null;
       }
-      const bytes = input.bytes ?? RECORD_BYTES;
-      const saved = apply(
-        addFile(state, { id, name, bucket: input.bucket, bytes, addedAt: Date.now() }),
-        setState,
+      const next = apply(
+        addFile(state, { id, name, bucket: input.bucket, bytes: input.bytes ?? RECORD_BYTES, addedAt: Date.now() }),
         `${name} is stored as three copies.`,
       );
-      return saved ? id : null;
+      if (!next) return null;
+      publish(next);
+      return id;
     },
     remove(id: string, name: string) {
-      const saved = apply(removeFile(state, id), setState, `${name} was removed from every machine.`);
-      if (saved) blobs.current.delete(id);
+      const next = apply(removeFile(state, id), `${name} was removed from every machine.`);
+      if (!next) return;
+      blobs.current.delete(id);
+      publish(next);
     },
     toggle(id: string) {
       const running = state.machines.find((machine) => machine.id === id)?.running;
-      apply(
+      const next = apply(
         toggleMachine(state, id),
-        setState,
         running ? `${id} stopped. Other copies keep the files readable.` : `${id} is back online.`,
       );
+      if (next) publish(next);
     },
     reset() {
       blobs.current.clear();
-      setState(createLibrary());
+      publish(createLibrary());
       toast.success("Library reset to the sample files.");
     },
   };

@@ -89,7 +89,7 @@ export function LibraryView() {
         <div className="dash-main">
           <header className="dash-topbar">
             <div><FolderOpen size={19} /><span>Library</span><ChevronRight size={14} /><strong>{folder}</strong></div>
-            <span className="connection-pill connected" role="status"><i />Demo · files stay in this browser</span>
+            <span className="connection-pill connected" role="status"><i />Shared · both Hydras sites show these files</span>
           </header>
           <main className="dash-content" id="main-content">
             <section className="dash-welcome">
@@ -122,7 +122,7 @@ export function LibraryView() {
             </section>
 
             <section className="stats-grid" aria-label="Library summary">
-              <Metric label="Files" value={String(summary.files)} hint="Stored in this browser" />
+              <Metric label="Files" value={String(summary.files)} hint="Saved on the Hydras server" />
               <Metric label="Fully protected" value={String(summary.protected)} hint="All three copies online" accent />
               <Metric label="Still readable" value={String(summary.readable)} hint="At least one copy is up" />
               <Metric label="Unavailable" value={String(summary.unavailable)} hint="Every copy of these files is down" />
