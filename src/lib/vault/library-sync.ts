@@ -1,6 +1,6 @@
 import type { LibraryState } from "./library";
 
-export const SHARED_LIBRARY_URL = "https://levy-poor-minus-import.trycloudflare.com/api/library";
+export const SHARED_LIBRARY_URL = "https://genesis-there-martin-pressed.trycloudflare.com/api/library";
 
 const SHARED_HOSTS = new Set(["hydras.software", "www.hydras.software"]);
 

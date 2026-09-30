@@ -7,8 +7,8 @@ import { blobPath, libraryFilePath, readLibrary, recordArrival, uploadsDirectory
 const ALLOWED_ORIGINS = new Set([
   "https://www.hydras.software",
   "https://hydras.software",
-  "http://3.237.189.169:3000",
-  "https://levy-poor-minus-import.trycloudflare.com",
+  "http://98.81.35.22:3000",
+  "https://genesis-there-martin-pressed.trycloudflare.com",
 ]);
 
 function corsHeaders(request: Request): Headers {
