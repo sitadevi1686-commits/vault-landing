@@ -6,21 +6,21 @@ describe("buildFor", () => {
     const build = buildFor("windows");
     expect(build).toBeDefined();
     expect(build?.os).toBe("windows");
-    expect(build?.href).toContain(".exe");
+    expect(build?.href).toBe("https://github.com/itsawesomeabhishek/vault");
   });
 
   it("returns the macOS build for the mac OS", () => {
     const build = buildFor("mac");
     expect(build).toBeDefined();
     expect(build?.os).toBe("mac");
-    expect(build?.href).toContain(".dmg");
+    expect(build?.href).toBe("https://github.com/itsawesomeabhishek/vault");
   });
 
   it("returns the Linux build for the linux OS", () => {
     const build = buildFor("linux");
     expect(build).toBeDefined();
     expect(build?.os).toBe("linux");
-    expect(build?.href).toContain(".AppImage");
+    expect(build?.href).toBe("https://github.com/itsawesomeabhishek/vault");
   });
 
   it("returns undefined for null (mobile / unknown OS)", () => {
@@ -29,7 +29,7 @@ describe("buildFor", () => {
 
   it("every build href points to the releases URL base", () => {
     for (const os of ["windows", "mac", "linux"] as const) {
-      expect(buildFor(os)?.href).toContain(siteConfig.releasesUrl);
+      expect(buildFor(os)?.href).toBe(siteConfig.githubUrl);
     }
   });
 

@@ -1,8 +1,7 @@
 import type { DesktopOS } from "@/lib/detect-os";
 
-// TODO: replace the placeholder repo and release details once the first desktop build is published.
-const GITHUB_URL = "https://github.com/your-org/vault";
-const RELEASES_URL = `${GITHUB_URL}/releases/latest`;
+const GITHUB_URL = "https://github.com/itsawesomeabhishek/vault";
+const RELEASES_URL = `${GITHUB_URL}/releases`;
 
 export type DesktopBuild = {
   os: DesktopOS;
@@ -18,17 +17,17 @@ export const siteConfig = {
   githubUrl: GITHUB_URL,
   docsUrl: `${GITHUB_URL}#readme`,
   releasesUrl: RELEASES_URL,
-  checksumsUrl: `${RELEASES_URL}/download/SHA256SUMS.txt`,
+  checksumsUrl: `${GITHUB_URL}#readme`,
   xUrl: "https://x.com/",
   version: "0.1.0",
   builds: [
     {
       os: "windows",
       label: "Windows",
-      fileName: "Hydras-Setup-0.1.0.exe",
+      fileName: "Vault-Setup.exe",
       arch: "x64 · Windows 10+",
-      size: "~92 MB",
-      href: `${RELEASES_URL}/download/Hydras-Setup-0.1.0.exe`,
+      size: "GitHub",
+      href: GITHUB_URL,
     },
     {
       os: "mac",
@@ -36,7 +35,7 @@ export const siteConfig = {
       fileName: "Hydras-0.1.0-universal.dmg",
       arch: "Apple silicon + Intel",
       size: "~110 MB",
-      href: `${RELEASES_URL}/download/Hydras-0.1.0-universal.dmg`,
+      href: GITHUB_URL,
     },
     {
       os: "linux",
@@ -44,7 +43,7 @@ export const siteConfig = {
       fileName: "Hydras-0.1.0.AppImage",
       arch: "x64 · AppImage",
       size: "~98 MB",
-      href: `${RELEASES_URL}/download/Hydras-0.1.0.AppImage`,
+      href: GITHUB_URL,
     },
   ] satisfies DesktopBuild[],
   nav: [
