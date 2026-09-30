@@ -22,6 +22,22 @@ export function setServer(state: LinkDemo, id: ServerId, up: boolean): LinkDemo 
   return { down: [...state.down, id] };
 }
 
+export type ServerProbe = {
+  id: ServerId;
+  ok: boolean;
+  ms: number | null;
+  host: string | null;
+  port: number;
+  peerOk: boolean | null;
+  peerMs: number | null;
+};
+
+export function summarizeProbes(probes: readonly ServerProbe[]) {
+  const byId = new Map(probes.map((probe) => [probe.id, probe]));
+  const down = LINK_SERVERS.filter((server) => byId.get(server.id)?.ok !== true).map((server) => server.id);
+  return { ...linkHealth({ down }), probes };
+}
+
 export function linkHealth(state: LinkDemo) {
   const copies = LINK_SERVERS.filter((server) => serverUp(state, server.id)).length;
   const linkOpen = serverUp(state, "a") && serverUp(state, "b");
